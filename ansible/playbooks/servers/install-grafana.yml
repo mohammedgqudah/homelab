@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: yes
+  # use community.grafana.grafna after installing debian/ubuntu
+  tasks:
+  - name: install grafana
+    ansible.builtin.package:
+      name: grafana
+      state: present
+  - name: enable grafana service
+    ansible.builtin.service:
+      name: grafana.service
+      state: started
+      enabled: true

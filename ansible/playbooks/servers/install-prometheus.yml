@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  roles:
+  - prometheus.prometheus.prometheus
+  vars:
+    prometheus_targets:
+      node:
+      - targets:
+        - 192.168.100.2:9100

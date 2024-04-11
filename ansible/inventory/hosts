@@ -1,0 +1,2 @@
+[all]
+potato.local ansible_user=hyper
