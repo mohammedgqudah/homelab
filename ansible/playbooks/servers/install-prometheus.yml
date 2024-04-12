@@ -1,6 +1,8 @@
 ---
 - hosts: admin
   become: yes
+  vars_files:
+    - ./../../vars/main.yml
   roles:
   - prometheus.prometheus.prometheus
   vars:
@@ -9,3 +11,11 @@
       - targets:
         - 192.168.100.2:9100
         - 64.23.177.184:9100
+    prometheus_scrape_configs:
+      - job_name: "node"
+        basic_auth:
+          username: prom
+          password: "{{ prometheus_node_exporter_password }}"
+        file_sd_configs:
+          - files:
+              - "{{ prometheus_config_dir }}/file_sd/node.yml"
