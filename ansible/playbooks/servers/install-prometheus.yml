@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: admin
   become: yes
   roles:
   - prometheus.prometheus.prometheus
@@ -8,3 +8,4 @@
       node:
       - targets:
         - 192.168.100.2:9100
+        - 64.23.177.184:9100

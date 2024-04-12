@@ -1,2 +1,6 @@
-[all]
+[servers]
 potato.local ansible_user=hyper
+64.23.177.184 ansible_user=root
+
+[admin]
+192.168.100.2 ansible_user=hyper

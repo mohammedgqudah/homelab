@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: admin
   become: yes
   # use community.grafana.grafna after installing debian/ubuntu
   tasks:
