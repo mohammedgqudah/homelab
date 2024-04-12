@@ -1,0 +1,12 @@
+groups:
+- name: cpu
+  rules:
+  - alert: HighNodeCPU
+    expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{job="node", mode="idle"}[5m])) * 100) > 80
+    for: 5m
+    labels:
+      severity: critical
+      type: cpu
+    annotations:
+      summary: "Node {{ $labels.instance }} has CPU over 80% for last 5 minute"
+      description: "CPU on {{ $labels.instance }} is averaging {{ $value }}"
