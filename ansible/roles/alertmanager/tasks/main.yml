@@ -1,0 +1,3 @@
+- name: install prometheus alert manager
+  import_role:
+    name: prometheus.prometheus.alertmanager

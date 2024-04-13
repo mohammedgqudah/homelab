@@ -16,8 +16,7 @@ Create the vault password file and write the password.
 vim ./ansible/.vault_pass.txt
 ```
 
-To edit an encrypted file:
-
 ```
-ansible-vault edit group_vars/<file>.yml
+ansible-playbook playbooks/install-common.yml -K
+ansible-playbook playbooks/deploy-monitoring.yml -K
 ```

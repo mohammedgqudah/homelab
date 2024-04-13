@@ -1,0 +1,9 @@
+---
+- name: Deploy the monitoring stack
+  hosts: admin
+  become: yes
+  vars_files:
+    - ../vars/main.yml
+  roles:
+    - prometheus
+    - alertmanager

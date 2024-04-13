@@ -1,0 +1,3 @@
+- name: Install prometheus
+  import_role:
+    name: prometheus.prometheus.prometheus
