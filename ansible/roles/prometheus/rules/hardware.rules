@@ -8,4 +8,4 @@ groups:
       severity: critical
     annotations:
       summary: "Node {{ $labels.instance }} chip {{ $labels.chip }} temperature >60c"
-      description: 'Temperature is currently {{ $value | humanizePercentage }} on chip {{ $labels.chip }} sesnor {{ $labels.sensor }}'
+      description: 'Temperature is currently {{ $value }} on chip {{ $labels.chip }} sesnor {{ $labels.sensor }}'
