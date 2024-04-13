@@ -12,9 +12,12 @@ prometheus_alertmanager_config:
 
 prometheus_targets:
   node:
+  # TODO: use ansible_hosts
   - targets:
     - 192.168.100.2:9100
     - 64.23.177.184:9100
+    - 165.227.137.4:9100
+    - pi-01.local:9100
 
 prometheus_scrape_configs:
   - job_name: "node"
