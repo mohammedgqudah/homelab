@@ -2,7 +2,7 @@ groups:
 - name: memory
   rules:
   - alert: NodeHighMemoryUsage
-    expr: ((node_memory_MemTotal_bytes - node_memory_MemFree_bytes) / node_memory_MemTotal_bytes) > 0.8
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.8
     for: 30s
     labels:
       severity: critical

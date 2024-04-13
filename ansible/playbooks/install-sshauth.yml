@@ -4,6 +4,6 @@
   tasks:
     - name: install public keys
       ansible.posix.authorized_key:
-        user: "{{ lookup('env', 'USER') }}"
+        user: "{{ ansible_user }}"
         state: present
         key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
