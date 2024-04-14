@@ -1,0 +1,31 @@
+grafana_version: latest
+
+grafana_datasources:
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    url: 'http://localhost:9090'
+    basicAuth: false
+
+  - name: Alertmanager
+    type: alertmanager
+    url: http://localhost:9093
+    access: proxy
+    jsonData:
+      implementation: prometheus
+      handleGrafanaManagedAlerts: false
+    basicAuth: false
+    basicAuthUser: prom
+    secureJsonData:
+      basicAuthPassword: prom
+
+
+grafana_dashboards:
+  - dashboard_id: 1860
+    revision_id: 36
+    datasource: prometheus
+
+grafana_security:
+  admin_user: admin
+  admin_password: "{{ grafana_admin_password }}"
+

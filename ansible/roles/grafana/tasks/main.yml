@@ -1,0 +1,3 @@
+- name: install grafana
+  import_role:
+    name: grafana.grafana.grafana

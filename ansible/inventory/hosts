@@ -5,4 +5,4 @@ pi-01.local
 pi-02.local
 
 [admin]
-192.168.100.2 ansible_user=hyper
+pi-02.local
