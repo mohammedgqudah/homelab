@@ -9,6 +9,21 @@ But for now, I'm reserving a private IP address for each machine in the DHCP ser
 
 # Setup
 
+## Kubernetes
+I run a self-managed kubernetes cluster using kubeadm.
+
+**Adding a new node**
+1. `ansible-playbook playbooks/setup-k8s-node.yml --limit pi-03.local`
+2. reboot the node
+3. on the control plane, generate a new token
+```
+$ kubeadm token create --print-join-command
+```
+4. ssh into the node, and run the join command
+```
+kubeadm join <host>:<port> --token abc.qwertyu --discovery-token-ca-cert-hash sha256:<hash>
+```
+
 ## Ansible
 Create the vault password file and write the password.
 

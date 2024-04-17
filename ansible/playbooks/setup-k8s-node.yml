@@ -1,0 +1,127 @@
+---
+- name: Deploy kubernetes cluster using kubeadm
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Define Kubernetes version and CRI-O stream
+      set_fact:
+        KUBERNETES_VERSION: "v1.29"
+        PROJECT_PATH: "prerelease:/main"
+
+    # on raspberry pi this file is used
+    # to store kernel options
+    - name: Gather information about cmdline
+      stat:
+        path: /boot/firmware/cmdline.txt
+      register: cmdline_info
+
+    # ensure cgroup_memory is enabled in Raspberry Pi OS.
+    # note: you need to reboot your raspberry pi for this to take effect.
+    - name: Ensure cgroup_memory=1 option is present
+      ensure_cmdline_option:
+        path: /boot/firmware/cmdline.txt
+        option: cgroup_memory
+        value: 1
+      when: cmdline_info.stat.exists
+
+    # this seemed redundant but it was required
+    # to enable cgroup memory.
+    - name: Ensure cgroup_enable=memory option is present
+      ensure_cmdline_option:
+        path: /boot/firmware/cmdline.txt
+        option: cgroup_enable
+        value: memory
+      when: cmdline_info.stat.exists
+
+    # based on the packaging guide for CRI-O
+    # https://github.com/cri-o/packaging/blob/main/README.md#distributions-using-deb-packages
+    - name: Install dependencies for adding repositories
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - software-properties-common
+        - curl
+
+    - name: Import Kubernetes repository key
+      apt_key:
+        url: "https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/Release.key"
+        state: present
+
+    - name: Add Kubernetes APT repository
+      apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/ /"
+        state: present
+        filename: "kubernetes.list"
+
+    - name: Import CRI-O repository key
+      apt_key:
+        url: "https://pkgs.k8s.io/addons:/cri-o:/{{ PROJECT_PATH }}/deb/Release.key"
+        state: present
+
+    - name: Add CRI-O APT repository
+      apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/{{ PROJECT_PATH }}/deb/ /"
+        state: present
+        filename: "cri-o.list"
+
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Install kubernetes packages & CRI-O
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - cri-o
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Start CRI-O service
+      service:
+        name: crio
+        state: started
+        enabled: true
+
+
+    # by default kubelet fails if swap is enabled
+    # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#before-you-begin
+    - name: Disable swap
+      command: swapoff -a
+
+    - name: Disable swap for raspberry pi
+      command: dphys-swapfile swapoff
+      ignore_errors: true
+
+    # disable swap permanently
+    - name: Remove swap entry from /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        state: absent
+        regexp: '^.*\sswap\s.*$'
+        backup: true
+
+    # disable swap permanently on raspberry pi
+    - name: Disable dphys-swapfile
+      service:
+        name: dphys-swapfile
+        state: stopped
+        enabled: false
+
+    - name: Enable bridged traffic
+      command: modprobe br_netfilter
+
+    - name: Ensure br_netfilter is loaded at boot
+      lineinfile:
+        dest: /etc/modules
+        line: 'br_netfilter'
+        create: yes
+
+    - name: Enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        state: present
+

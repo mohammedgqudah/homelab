@@ -1,8 +1,8 @@
 [servers]
-potato.local ansible_user=hyper
-64.23.177.184 ansible_user=root
+potato.local
 pi-01.local
 pi-02.local
+pi-03.local
 
 [admin]
 pi-02.local
