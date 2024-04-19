@@ -1,0 +1,69 @@
+# This playbook will setup an NFS server for the cluster.
+# The NFS server is then used with https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner
+# to simulate dynamic provisioning in cloud environments.
+#
+# NOTE: I might later drop this playbook and run the nfs server
+# as a kubernetes pod in the master node since it's already
+# running on the master node and I don't have a separate machine for NFS
+- name: Setup NFS server for the cluster
+  hosts: servers
+  become: yes
+  vars:
+    nfs_subnet: "192.168.100.0/24"
+    nfs_port: 2049
+    nfs_path: "/data/k8s_nfs"
+  tasks:
+    - name: Create the NFS directory
+      file:
+        state: directory
+        path: "{{ nfs_path }}"
+
+    - name: Install NFS server
+      apt:
+        package: nfs-kernel-server
+
+    - name: Enable and start NFS server
+      service:
+        name: nfs-kernel-server
+        state: started
+        enabled: true
+
+    - name: Configure exports
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: "{{ nfs_path }} {{ nfs_subnet }}(rw,sync,no_subtree_check,root_squash)"
+        state: present
+        create: yes
+        backup: yes
+      register: nfs_exports_config
+
+    - name: Export the NFS directories
+      ansible.builtin.shell: exportfs -a
+      when: nfs_exports_config.changed
+
+    # I've added this as an extra layer of security
+    # but I haven't checked if this is the standard or not.
+    # I also need to persist these changes on RPI.
+    - name: Allow NFS traffic from the local subnet
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: "{{ item.proto }}"
+        source: "{{ nfs_subnet }}"
+        destination_port: "{{ nfs_port }}"
+        jump: ACCEPT
+      with_items:
+        - { proto: 'tcp' }
+        - { proto: 'udp' }
+      when: nfs_subnet is defined
+
+    - name: Block NFS traffic from other sources
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: "{{ item.proto }}"
+        destination_port: "{{ nfs_port }}"
+        jump: DROP
+      with_items:
+        - { proto: 'tcp' }
+        - { proto: 'udp' }
+      when: nfs_subnet is defined
+

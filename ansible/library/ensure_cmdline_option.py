@@ -21,6 +21,7 @@ options:
 author:
     - Mohammed Qudah (@mohammedgqudah)
 """
+
 EXAMPLES = r'''
 - name: Ensure cgroup_memory=1 option is present
   ensure_cmdline_option:
