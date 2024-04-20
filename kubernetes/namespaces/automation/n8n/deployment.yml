@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n
+spec:
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      securityContext:
+        fsGroup: 1024
+      containers:
+        - image: docker.n8n.io/n8nio/n8n:latest
+          imagePullPolicy: Always
+          name: n8n
+          env:
+            - name: N8N_EDITOR_BASE_URL
+              value: auto.hyperserver.dev
+            - name: N8N_PORT
+              value: "5678"
+            - name: N8N_SMTP_SSL
+              value: "true"
+            - name: N8N_LOG_LEVEL
+              value: "debug"
+            - name: N8N_EMAIL_MODE
+              value: "smtp"
+            - name: N8N_SMTP_HOST
+              value: smtp.gmail.com
+            - name: N8N_SMTP_PORT
+              value: "465"
+            - name: N8N_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: smtp-user
+            - name: N8N_SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: smtp-password
+            - name: N8N_SMTP_SENDER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: smtp-user
+          ports:
+            - name: http
+              containerPort: 5678
+          volumeMounts:
+            - name: n8n-storage
+              mountPath: /home/node
+      volumes:
+        - name: n8n-storage
+          persistentVolumeClaim:
+            claimName: n8n-storage
