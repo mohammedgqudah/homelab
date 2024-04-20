@@ -1,0 +1,9 @@
+# The ingress controller will use a node port which will be used
+# in the cloudflare tunnel.
+# https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#over-a-nodeport-service
+#controller:
+#  service:
+#    type: NodePort
+
+# NOTE: I'm no longer using a NodePort because my cloduflare tunnel is running in a container that can
+# communicate with the nginx ingress service.

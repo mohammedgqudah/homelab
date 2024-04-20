@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  #namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - image: prom/prometheus:latest
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/var/lib/prometheus"
+            - "--storage.tsdb.retention.size=5GB"
+            - "--storage.tsdb.retention.time=30d"
+          imagePullPolicy: Always
+          name: prometheus
+          ports:
+            - name: prometheus
+              containerPort: 9090
+          volumeMounts:
+            - mountPath: /var/lib/prometheus
+              name: tsdb-storage
+            - mountPath: /etc/prometheus
+              name: prometheus-config
+      volumes:
+        - name: tsdb-storage
+          persistentVolumeClaim:
+            claimName: prometheus-storage
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config

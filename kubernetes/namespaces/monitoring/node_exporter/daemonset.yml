@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: node-exporter
+  template:
+    metadata:
+      labels:
+        name: node-exporter
+    spec:
+      tolerations:
+        # run node exporter on the control plane
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: node-exporter
+          image: quay.io/prometheus/node-exporter:latest
+          # https://github.com/prometheus/node_exporter/blob/5c4f9e727de4a213b702138f691480ae5a3053c7/collector/paths.go#L24
+          args:
+            - "--path.rootfs=/host/root"
+            - "--path.procfs=/host/proc"
+            - "--path.sysfs=/host/sys"
+          imagePullPolicy: Always
+          volumeMounts:
+            # mount host /proc and /sys to avoid
+            # monitoring the container itself
+            - name: host-proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: host-sys
+              mountPath: /host/sys
+              readOnly: true
+            - name: host-root
+              mountPath: /host/root
+              readOnly: true
+          ports:
+            - name: metrics
+              containerPort: 9100
+      # set host volumes that node-exporter will mine
+      volumes:
+        - name: host-proc
+          hostPath:
+            path: /proc
+        - name: host-sys
+          hostPath:
+            path: /sys
+        - name: host-root
+          hostPath:
+            path: /
+      # the cluster only has Linux nodes
+      # but this is in case I add non-linux later
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
