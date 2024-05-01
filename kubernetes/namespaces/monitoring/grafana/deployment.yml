@@ -15,27 +15,23 @@ spec:
         - image: grafana/grafana:10.4.2-ubuntu
           imagePullPolicy: IfNotPresent
           name: grafana
-          env:
-            - name: GF_LOG_LEVEL
-              value: DEBUG
-            - name: GF_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: grafana-secret
-                  key: db-password
-            - name: GF_AUTH_GITHUB_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: grafana-secret
-                  key: github-client-secret
+          envFrom:
+            - configMapRef:
+                name: grafana-config
+            - secretRef:
+                name: grafana-secret
           ports:
             - name: http
               containerPort: 3000
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: grafana-storage
-            - mountPath: /etc/grafana
-              name: grafana-config
+            - mountPath: /etc/dashboards
+              name: grafana-dashboards
+            - mountPath: /etc/provisioning/dashboards
+              name: grafana-provisioning
+            - mountPath: /etc/provisioning/datasources
+              name: grafana-provisioning
           # https://grafana.com/docs/grafana/latest/setup-grafana/installation/kubernetes/
           readinessProbe:
             failureThreshold: 3
@@ -66,3 +62,9 @@ spec:
         - name: grafana-config
           configMap:
             name: grafana-config
+        - name: grafana-provisioning
+          configMap:
+            name: grafana-provisioning
+        - name: grafana-dashboards
+          configMap:
+            name: grafana-dashboards

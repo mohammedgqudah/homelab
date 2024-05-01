@@ -3,34 +3,26 @@ kind: ConfigMap
 metadata:
   name: grafana-config
 data:
-  grafana.ini: |
-    [server]
-    root_url = https://grafana.hyperserver.dev/
+  GF_SERVER_ROOT_URL: "https://grafana.hyperserver.dev/"
+  GF_ALERTING_ENABLED: "false"
+  GF_LOG_LEVEL: "debug"
 
-    [alerting]
-    ; I use alertmanager for alerting
-    enabled = false
+  GF_DATABASE_TYPE: "postgres"
+  GF_DATABASE_HOST: "${POSTGRES_SERVICE_HOST}:${POSTGRES_SERVICE_PORT}"
+  GF_DATABASE_NAME: "grafana"
+  GF_DATABASE_USER: "grafana"
 
-    [security]
-    admin_user = admin
-    
-    [database]
-    type = postgres
-    host = $__env{POSTGRES_SERVICE_HOST}:$__env{POSTGRES_SERVICE_PORT}
-    name = grafana
-    user = grafana
+  GF_AUTH_DISABLE_LOGIN_FORM: "true"
 
-    [auth]
-    disable_login_form = true
+  GF_AUTH_GITHUB_ENABLED: "true"
+  GF_AUTH_GITHUB_SCOPES: "user:email,read:org"
+  GF_AUTH_GITHUB_AUTH_URL: "https://github.com/login/oauth/authorize"
+  GF_AUTH_GITHUB_TOKEN_URL: "https://github.com/login/oauth/access_token"
+  GF_AUTH_GITHUB_API_URL: "https://api.github.com/user"
+  GF_AUTH_GITHUB_TEAM_IDS: "10028644"
+  GF_AUTH_GITHUB_ALLOW_SIGN_UP: "true"
+  GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS: "q-homelab"
+  GF_AUTH_GITHUB_ROLE_ATTRIBUTE_PATH: "[login=='mohammedgqudah'][0] && 'GrafanaAdmin' || 'Viewer'"
 
-    [auth.github]
-    enabled = true
-    scopts = user:email,read:org
-    auth_url = https://github.com/login/oauth/authorize
-    token_url = https://github.com/login/oauth/access_token
-    api_url = https://api.github.com/user
-    ; # get the team ID from the GH rest API or GH cli
-    team_ids = "10028644"
-    allow_sign_up = true
-    allowed_organizations = ["q-homelab"]
-    client_id = "d1e188686b10e5899b56"
+  GF_PATHS_PROVISIONING: "/etc/provisioning"
+
