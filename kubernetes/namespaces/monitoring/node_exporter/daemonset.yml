@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-exporter
-  namespace: kube-system
+  #namespace: monitoring
 spec:
   selector:
     matchLabels:

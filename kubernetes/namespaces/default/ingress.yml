@@ -26,13 +26,3 @@ spec:
                 name: n8n
                 port:
                   number: 80
-    - host: grafana.hyperserver.dev
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  number: 80
