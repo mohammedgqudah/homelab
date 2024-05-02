@@ -4,12 +4,12 @@ datasources:
   - name: prometheus
     type: prometheus
     access: proxy
-    url: 'http://prometheus.default.svc.cluster.local:9090'
+    url: 'http://prometheus.default.svc.cluster.local'
     basicAuth: false
 
   - name: Alertmanager
     type: alertmanager
-    url: 'http://alertmanager.default.svc.cluster.local:9093'
+    url: 'http://alertmanager.default.svc.cluster.local'
     access: proxy
     jsonData:
       implementation: prometheus
