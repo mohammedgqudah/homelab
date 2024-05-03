@@ -1,0 +1,93 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'kubernetes-service-endpoints'
+    scrape_interval: 1s
+    scrape_timeout: 1s
+    kubernetes_sd_configs:
+      - role: endpoints
+    relabel_configs:
+      # select services with the prometheus.io/scrape annotation
+      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      # override the default /metrics path
+      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      # override the default port
+      - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+        action: replace
+        target_label: __address__
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+      # format labels
+      - action: labelmap
+        regex: __meta_kubernetes_service_label_(.+)
+      # format service names as job
+      - source_labels: [__meta_kubernetes_service_name]
+        action: replace
+        target_label: job
+      - action: replace
+        source_labels:
+        - __meta_kubernetes_pod_node_name
+        target_label: node
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: namespace
+
+  - job_name: "kubernetes-apiservers"
+    scheme: https
+    kubernetes_sd_configs:
+      - role: endpoints
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    authorization:
+      credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    # Keep only the default/kubernetes service endpoints for the https port. This
+    # will add targets for each API server which Kubernetes adds an endpoint to
+    # the default/kubernetes service.
+    relabel_configs:
+      - source_labels:
+          [
+            __meta_kubernetes_namespace,
+            __meta_kubernetes_service_name,
+            __meta_kubernetes_endpoint_port_name,
+          ]
+        action: keep
+        regex: default;kubernetes;https
+
+  # Scrape config for nodes (kubelet).
+  - job_name: "kubernetes-nodes"
+    scheme: https
+    kubernetes_sd_configs:
+      - role: node
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    authorization:
+      credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+
+  # Scrape config for Kubelet cAdvisor.
+  - job_name: "kubernetes-cadvisor"
+    scheme: https
+    kubernetes_sd_configs:
+      - role: node
+    # Starting Kubernetes 1.7.3 the cAdvisor metrics are under /metrics/cadvisor.
+    # Kubernetes CIS Benchmark recommends against enabling the insecure HTTP
+    # servers of Kubernetes, therefore the cAdvisor metrics on the secure handler
+    # are used.
+    metrics_path: /metrics/cadvisor
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    authorization:
+      credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
