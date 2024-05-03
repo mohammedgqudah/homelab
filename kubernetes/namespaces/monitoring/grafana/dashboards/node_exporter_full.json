@@ -23753,14 +23753,14 @@
       {
         "current": {
           "selected": true,
-          "text": "pi-03",
-          "value": "pi-03"
+          "text": "pi-01",
+          "value": "pi-01"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(node_uname_info{job=\"$job\"},kubernetes_node)",
+        "definition": "label_values(node_uname_info{job=\"$job\"},node)",
         "hide": 0,
         "includeAll": false,
         "label": "Kubernetes Node",
@@ -23769,7 +23769,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(node_uname_info{job=\"$job\"},kubernetes_node)",
+          "query": "label_values(node_uname_info{job=\"$job\"},node)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -23805,14 +23805,14 @@
       {
         "current": {
           "selected": false,
-          "text": "172.16.178.183:9100",
-          "value": "172.16.178.183:9100"
+          "text": "172.16.232.232:9100",
+          "value": "172.16.232.232:9100"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(node_uname_info{kubernetes_node=\"$kubernetes_node\"},instance)",
+        "definition": "label_values(node_uname_info{node=\"$kubernetes_node\"},instance)",
         "description": "",
         "hide": 0,
         "includeAll": false,
@@ -23822,7 +23822,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(node_uname_info{kubernetes_node=\"$kubernetes_node\"},instance)",
+          "query": "label_values(node_uname_info{node=\"$kubernetes_node\"},instance)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -23865,6 +23865,6 @@
   "timezone": "browser",
   "title": "Node Exporter Full",
   "uid": "rYdddlPWk",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
