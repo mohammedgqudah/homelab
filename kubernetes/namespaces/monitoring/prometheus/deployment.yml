@@ -31,6 +31,8 @@ spec:
               name: tsdb-storage
             - mountPath: /etc/prometheus
               name: prometheus-config
+            - mountPath: /etc/prometheus-rules
+              name: prometheus-rules
       volumes:
         - name: tsdb-storage
           persistentVolumeClaim:
@@ -38,3 +40,6 @@ spec:
         - name: prometheus-config
           configMap:
             name: prometheus-config
+        - name: prometheus-rules
+          configMap:
+            name: prometheus-rules

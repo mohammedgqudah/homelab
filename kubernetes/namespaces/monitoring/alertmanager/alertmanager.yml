@@ -1,0 +1,12 @@
+route:
+  receiver: 'default'
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+
+receivers:
+  - name: 'default'
+    discord_configs:
+      - title: '{{ template "discord.default.title" . }}'
+        webhook_url_file: '/etc/alertmanager-secrets/alerts-channel-webhook'

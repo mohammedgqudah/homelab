@@ -1,0 +1,23 @@
+# service-discovery service
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-sd
+spec:
+  # SRV records will be used by prometheus for service discovery.
+  clusterIP: None
+  selector:
+    app: alertmanager
+---
+# web UI service 
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+spec:
+  selector:
+    app: alertmanager
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: alertmanager

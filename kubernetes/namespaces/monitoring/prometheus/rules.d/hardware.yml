@@ -1,0 +1,11 @@
+groups:
+- name: hardware
+  rules:
+  - alert: NodeHighTemperature
+    expr: node_hwmon_temp_celsius{job="node-exporter"} > 60
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Node {{ $labels.node }} chip {{ $labels.chip }} temperature >60c"
+      description: 'Temperature is currently {{ $value }} on chip {{ $labels.chip }} sesnor {{ $labels.sensor }}'
