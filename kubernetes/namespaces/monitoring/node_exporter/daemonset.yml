@@ -12,6 +12,11 @@ spec:
       labels:
         name: node-exporter
     spec:
+      hostPID: true
+      # i'm using the host-network as a workaround to allow
+      # the node exporter dashboard to have contentious data even
+      # after re-deploying the daemonset.
+      hostNetwork: true
       tolerations:
         # run node exporter on the control plane
         - key: node-role.kubernetes.io/control-plane

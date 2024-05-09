@@ -6,6 +6,7 @@ metadata:
     prometheus.io/scrape: 'true'
 spec:
   type: ClusterIP
+  clusterIP: None
   selector:
     name: node-exporter
   ports:
