@@ -6,11 +6,13 @@ datasources:
     access: proxy
     url: 'http://prometheus.default.svc.cluster.local'
     basicAuth: false
+    uid: prometheus
 
   - name: Alertmanager
     type: alertmanager
     url: 'http://alertmanager.default.svc.cluster.local'
     access: proxy
+    uid: alertmanager
     jsonData:
       implementation: prometheus
       handleGrafanaManagedAlerts: false
