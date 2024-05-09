@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+spec:
+  selector:
+    matchLabels:
+      app: kube-state-metrics
+  template:
+    metadata:
+      labels:
+        app: kube-state-metrics
+    spec:
+      serviceAccountName: kube-state-metrics
+      containers:
+        - image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.12.0
+          name: kube-state-metrics
+          imagePullPolicy: IfNotPresent
+          args:
+            - '--resources=pods,deployments,services,nodes,ingresses,namespaces,persistentvolumeclaims,persistentvolumes,replicasets,statefulsets'
+          ports:
+            - name: metrics
+              containerPort: 8080
+
