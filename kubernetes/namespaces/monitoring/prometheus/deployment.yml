@@ -14,12 +14,13 @@ spec:
     spec:
       serviceAccountName: prometheus
       containers:
-        - image: prom/prometheus:latest
+        - image: prom/prometheus:v2.52.0
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/var/lib/prometheus"
             - "--storage.tsdb.retention.size=5GB"
             - "--storage.tsdb.retention.time=30d"
+            - "--web.enable-lifecycle"
           imagePullPolicy: Always
           name: prometheus
           ports:

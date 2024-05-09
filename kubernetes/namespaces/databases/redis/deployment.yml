@@ -13,8 +13,8 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:latest
-          imagePullPolicy: Always
+          image: redis:7.2.4
+          imagePullPolicy: IfNotPresent
           command: 
             - redis-server
           args:

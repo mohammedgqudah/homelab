@@ -14,7 +14,7 @@ spec:
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           env:
             - name: CLOUDFLARED_TOKEN
               valueFrom:
