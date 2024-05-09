@@ -17,6 +17,7 @@ spec:
         - image: prom/prometheus:v2.52.0
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--web.external-url=https://prometheus.hyperserver.dev"
             - "--storage.tsdb.path=/var/lib/prometheus"
             - "--storage.tsdb.retention.size=5GB"
             - "--storage.tsdb.retention.time=30d"
