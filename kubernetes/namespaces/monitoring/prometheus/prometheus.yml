@@ -58,26 +58,26 @@ scrape_configs:
       ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     authorization:
       credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
     relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
+      - action: replace
+        source_labels: [__meta_kubernetes_node_name]
+        target_label: node
 
   # Scrape config for Kubelet cAdvisor.
   - job_name: "kubernetes-cadvisor"
     scheme: https
     kubernetes_sd_configs:
       - role: node
-    # Starting Kubernetes 1.7.3 the cAdvisor metrics are under /metrics/cadvisor.
-    # Kubernetes CIS Benchmark recommends against enabling the insecure HTTP
-    # servers of Kubernetes, therefore the cAdvisor metrics on the secure handler
-    # are used.
     metrics_path: /metrics/cadvisor
     tls_config:
       ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     authorization:
       credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
     relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
+      - action: replace
+        source_labels: [__meta_kubernetes_node_name]
+        target_label: node
