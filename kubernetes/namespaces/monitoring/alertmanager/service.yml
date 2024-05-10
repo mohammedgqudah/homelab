@@ -8,6 +8,10 @@ spec:
   clusterIP: None
   selector:
     app: alertmanager
+  ports:
+    - name: alertmanager
+      targetPort: alertmanager
+      port: 9093
 ---
 # web UI service 
 apiVersion: v1

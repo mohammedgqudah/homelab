@@ -14,6 +14,7 @@ spec:
       containers:
         - name: postgres
           image: postgres:16.2
+          imagePullPolicy: IfNotPresent
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata

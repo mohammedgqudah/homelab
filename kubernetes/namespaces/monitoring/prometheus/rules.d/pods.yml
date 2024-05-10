@@ -11,7 +11,7 @@ groups:
       description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-running state for longer than 15 minutes."
 
   - alert: KubernetesPodCrashLooping
-    expr: increase(kube_pod_container_status_restarts_total[1m]) > 3
+    expr: increase(kube_pod_container_status_restarts_total[10m]) > 3
     for: 2m
     labels:
       severity: warning
