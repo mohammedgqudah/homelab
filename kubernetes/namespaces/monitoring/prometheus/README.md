@@ -6,4 +6,7 @@ The configuration file is `prometheus.yml` and can be applied as a configmap usi
 ```
 $ make config
 ```
-To reload the configuration you need to send a post request to 
+To reload the configuration, send a SIGHUP signal to the process:
+```
+kubectl exec --tty --stdin deploy/prometheus -- kill -SIGHUP 1
+```

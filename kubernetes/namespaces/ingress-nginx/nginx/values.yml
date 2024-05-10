@@ -1,6 +1,10 @@
 controller:
+  config:
+    enable-real-ip: true
+    forwarded-for-header: cf-connecting-ip
   metrics:
     enabled: true
-  podAnnotations:
-    prometheus.io/port: "10254"
-    prometheus.io/scrape: "true"
+    service:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "10254"
