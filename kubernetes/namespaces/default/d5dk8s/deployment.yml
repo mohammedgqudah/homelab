@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: d5dk8s
+spec:
+  selector:
+    matchLabels:
+      app: d5dk8s
+  template:
+    metadata:
+      labels:
+        app: d5dk8s
+    spec:
+      serviceAccountName: d5dk8s
+      containers:
+        - name: d5dk8s
+          image: ghcr.io/mohammedgqudah/d5dk8s:v0.2.0
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: d5dk8s-secret
+          env:
+            - name: K8S_API_SERVER
+              value: "https://kubernetes.default.svc"
