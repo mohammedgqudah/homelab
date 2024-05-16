@@ -14,7 +14,7 @@ spec:
       serviceAccountName: d5dk8s
       containers:
         - name: d5dk8s
-          image: ghcr.io/mohammedgqudah/d5dk8s:v0.2.0
+          image: ghcr.io/mohammedgqudah/d5dk8s:v0.3.0
           imagePullPolicy: Always
           envFrom:
             - secretRef:
