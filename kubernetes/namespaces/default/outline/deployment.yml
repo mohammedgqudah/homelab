@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: outline
+spec:
+  selector:
+    matchLabels:
+      app: outline
+  template:
+    metadata:
+      labels:
+        app: outline
+    spec:
+      containers:
+      - name: outline
+        image: outlinewiki/outline:latest
+        envFrom:
+          - secretRef:
+              name: outline-secret
+        env:
+          - name: URL
+            value: https://wiki.hyperserver.dev
+          - name: COLLABORATION_URL
+            value: https://wiki.hyperserver.dev
+          # Should be enabled but i will configure postgres later
+          - name: PGSSLMODE
+            value: disable
+          # HTTPS is handled by cloudflare for now
+          - name: FORCE_HTTPS
+            value: "false"
+          # OpenID Connect via Authentik
+          - name: OIDC_AUTH_URI
+            value: https://auth.hyperserver.dev/application/o/authorize/
+          - name: OIDC_TOKEN_URI
+            value: https://auth.hyperserver.dev/application/o/token/
+          - name: OIDC_USERINFO_URI
+            value: https://auth.hyperserver.dev/application/o/userinfo/
+          - name: OIDC_LOGOUT_URI
+            value: https://auth.hyperserver.dev/application/o/wiki/end-session/
+          - name: OIDC_DISPLAY_NAME
+            value: Authentik
+        ports:
+          - name: outline
+            containerPort: 3000
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /robots.txt
+            port: 3000
+            scheme: HTTP
+          # it usually takes 20 seconds to start the server
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 2
