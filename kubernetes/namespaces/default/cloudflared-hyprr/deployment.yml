@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared-hyprr
+spec:
+  selector:
+    matchLabels:
+      app: cloudflared-hyprr
+  template:
+    metadata:
+      labels:
+        app: cloudflared-hyprr
+    spec:
+      containers:
+        - name: cloudflared-hyprr
+          image: cloudflare/cloudflared:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLOUDFLARED_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflared-hyprr-secret
+                  key: token
+          args:
+            - "tunnel"
+            - "--no-autoupdate"
+            - "run"
+            - "--token=$(CLOUDFLARED_TOKEN)"
