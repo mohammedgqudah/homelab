@@ -3,6 +3,7 @@ potato.local
 pi-01.local
 pi-02.local
 pi-03.local
+debian-01.local
 
 [admin]
 pi-02.local
