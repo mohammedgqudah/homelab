@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pastebin
+spec:
+  selector:
+    app: pastebin
+  ports:
+  - name: pastebin
+    port: 80
+    targetPort: pastebin

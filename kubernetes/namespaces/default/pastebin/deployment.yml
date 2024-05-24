@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pastebin
+spec:
+  selector:
+    matchLabels:
+      app: pastebin
+  template:
+    metadata:
+      labels:
+        app: pastebin
+    spec:
+      containers:
+        - image: wantguns/bin 
+          imagePullPolicy: IfNotPresent
+          name: pastebin
+          env:
+            - name: BIN_PORT
+              value: "6162"
+            - name: BIN_LIMITS
+              value: '{form="16 Mib"}'
+          ports:
+            - containerPort: 6162
+              name: pastebin
+          volumeMounts:
+            - name: pastebin-storage
+              mountPath: /upload
+      volumes:
+        - name: pastebin-storage
+          persistentVolumeClaim:
+            claimName: pastebin-storage
+
