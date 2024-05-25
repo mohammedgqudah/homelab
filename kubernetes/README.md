@@ -15,6 +15,7 @@ ansible-playbooks playbooks/setup-nfs.yml --limit pi-02.local
 And then install the NFS provisioner using `helm`
 
 ```
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
 helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
 --set nfs.server=pi-02.local \
 --set nfs.path=/data/k8s_nfs
@@ -35,3 +36,14 @@ $ kubeadm token create --print-join-command
 kubeadm join <host>:<port> --token abc.qwertyu --discovery-token-ca-cert-hash sha256:<hash>
 ```
 
+
+## Building the cluster
+```
+sudo kubeadm init --config=kubeadm.yml
+```
+
+### Installing calico
+```
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml
+kubectl apply -f calico/custom-resources.yml
+```
