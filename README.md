@@ -1,6 +1,8 @@
 # Homelab
 A self-managed kubernetes cluster at home.
 
+![image](https://github.com/mohammedgqudah/homelab/assets/26502088/7dae0c35-a7b5-41b7-a2f1-1264d2e865e7)
+
 ## DNS
 I plan to use dnsmasq once I add more servers.
 But for now, I'm reserving a private IP address for each machine in the DHCP server and adding a static DNS entry in the router, formatted as `<hostname>.local`.
