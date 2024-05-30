@@ -6,16 +6,6 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: prometheus.hyperserver.dev
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: prometheus
-                port:
-                  number: 80
     - host: auto.hyperserver.dev
       http:
         paths:
