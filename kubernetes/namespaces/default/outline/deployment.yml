@@ -19,9 +19,9 @@ spec:
               name: outline-secret
         env:
           - name: URL
-            value: https://wiki.hyperserver.dev
+            value: https://outline.hyperserver.dev
           - name: COLLABORATION_URL
-            value: https://wiki.hyperserver.dev
+            value: https://outline.hyperserver.dev
           # Should be enabled but i will configure postgres later
           - name: PGSSLMODE
             value: disable
@@ -39,6 +39,22 @@ spec:
             value: https://auth.hyperserver.dev/application/o/wiki/end-session/
           - name: OIDC_DISPLAY_NAME
             value: Authentik
+          # S3 storage using minio
+          - name: FILE_STORAGE
+            value: s3
+          - name: AWS_REGION
+            value: us-east-1
+          - name: AWS_S3_UPLOAD_BUCKET_URL
+            value: https://s3-api.hyperserver.dev/wiki-ol
+          - name: AWS_S3_ACCELERATE_URL
+            value: https://s3-api.hyperserver.dev/wiki-ol
+          - name: AWS_S3_UPLOAD_BUCKET_NAME
+            value: wiki-ol
+          - name: AWS_S3_FORCE_PATH_STYLE
+            value: "false"
+          - name: AWS_S3_ACL
+            value: "private"
+
         ports:
           - name: outline
             containerPort: 3000
