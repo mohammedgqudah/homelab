@@ -14,11 +14,17 @@ spec:
       serviceAccountName: d5dk8s
       containers:
         - name: d5dk8s
-          image: ghcr.io/mohammedgqudah/d5dk8s:v0.3.0
-          imagePullPolicy: Always
+          image: ghcr.io/mohammedgqudah/d5dk8s:v1.0.0
+          args:
+            - "--config=/etc/d5dk8s/d5dk8s.yml"
+          imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
                 name: d5dk8s-secret
-          env:
-            - name: K8S_API_SERVER
-              value: "https://kubernetes.default.svc"
+          volumeMounts:
+            - name: d5dk8s-config
+              mountPath: /etc/d5dk8s
+      volumes:
+        - name: d5dk8s-config
+          configMap:
+            name: d5dk8s-config

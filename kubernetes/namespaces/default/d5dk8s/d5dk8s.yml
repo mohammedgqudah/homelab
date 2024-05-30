@@ -1,0 +1,5 @@
+api_server: "https://kubernetes.default.svc"
+
+prometheus:
+  enabled: true
+  url: http://prometheus.default.svc.cluster.local
