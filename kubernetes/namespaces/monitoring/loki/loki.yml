@@ -1,0 +1,39 @@
+target: all
+
+# loki runs within the cluster only.
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+storage_config:
+  aws:
+    endpoint: "http://minio.default.svc.cluster.local:9000"
+    access_key_id: ${S3_ACCESS_KEY_ID}
+    secret_access_key: ${S3_SECRET_ACCESS_KEY}
+    s3forcepathstyle: false
+    region: us-east-1
+    # comma separated list of bucket names to evenly distribute chunks over.
+    bucketnames: "loki"
+    insecure: true
+  tsdb_shipper:
+    active_index_directory: /var/lib/loki/tsdb-index
+    cache_location: /var/lib/loki/tsdb-cache
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: s3
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+common:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /loki

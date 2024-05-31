@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+spec:
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+      - name: loki
+        image: grafana/loki:2.9.8
+        args:
+          - "-config.file=/etc/loki/loki.yml"
+          - "-print-config-stderr"
+        envFrom:
+          - secretRef:
+              name: loki-secret
+        ports:
+          - name: loki
+            containerPort: 3100
+        volumeMounts:
+          - name: loki-config
+            mountPath: /etc/loki/
+          - name: loki-storage
+            mountPath: /var/lib/loki
+      volumes:
+        - name: loki-config
+          configMap:
+            name: loki-config
+        - name: loki-storage
+          persistentVolumeClaim:
+            claimName: loki-storage
