@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-d5dk8s-database
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: create-db
+          image: postgres:13
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c "CREATE DATABASE d5dk8s;" && \
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c \
+                "CREATE USER d5dk8s WITH ENCRYPTED PASSWORD '$(D5DK8S_POSTGRES_PASSWORD)';" && \
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE d5dk8s TO d5dk8s;"
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: D5DK8S_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: d5dk8s-secret
+                  key: D5DK8S_CONFIG_POSTGRES_PASSWORD
