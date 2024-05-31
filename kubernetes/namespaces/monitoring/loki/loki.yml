@@ -11,7 +11,7 @@ storage_config:
     endpoint: "http://minio.default.svc.cluster.local:9000"
     access_key_id: ${S3_ACCESS_KEY_ID}
     secret_access_key: ${S3_SECRET_ACCESS_KEY}
-    s3forcepathstyle: false
+    s3forcepathstyle: true
     region: us-east-1
     # comma separated list of bucket names to evenly distribute chunks over.
     bucketnames: "loki"
