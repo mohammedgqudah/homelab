@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blink
+spec:
+  selector:
+    matchLabels:
+      app: blink
+  template:
+    metadata:
+      labels:
+        app: blink
+    spec:
+      containers:
+        - image: ghcr.io/janejeon/blink:latest
+          imagePullPolicy: IfNotPresent
+          name: blink
+          envFrom:
+            - configMapRef:
+                name: blink-config
+            - secretRef:
+                name: blink-secret
+          ports:
+            - containerPort: 3000
+              name: blink
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: /app
+              port: 3000
+              scheme: HTTP

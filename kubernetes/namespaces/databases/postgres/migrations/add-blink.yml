@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-blink-database
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: create-db
+          image: postgres:13
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c "CREATE DATABASE blink;" && \
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c \
+                "CREATE USER blink WITH ENCRYPTED PASSWORD '$(USER_POSTGRES_PASSWORD)';" && \
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d blink -c "GRANT ALL PRIVILEGES ON DATABASE blink TO blink;"
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d blink -c "GRANT ALL ON SCHEMA public TO blink;"
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: USER_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blink-secret
+                  key: POSTGRES_PASSWORD

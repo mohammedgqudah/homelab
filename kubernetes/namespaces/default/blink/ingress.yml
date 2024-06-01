@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blink
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: l.hyprr.dev
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: blink
+              port:
+                name: blink
