@@ -12,7 +12,7 @@ groups:
 
   - alert: KubernetesPodCrashLooping
     expr: increase(kube_pod_container_status_restarts_total[10m]) > 3
-    for: 2m
+    for: 10m
     labels:
       severity: warning
     annotations:
