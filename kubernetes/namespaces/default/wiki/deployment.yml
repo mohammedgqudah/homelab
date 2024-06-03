@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstack
+spec:
+  selector:
+    matchLabels:
+      app: bookstack
+  template:
+    metadata:
+      labels:
+        app: bookstack
+    spec:
+      containers:
+        - image: linuxserver/bookstack:latest
+          imagePullPolicy: IfNotPresent
+          name: bookstack
+          env:
+            - name: APP_URL
+              value: https://wiki.hyprr.dev
+            - name: DB_HOST
+              value: mariadb.default.svc.cluster.local
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: bookstack
+            - name: DB_USER
+              value: bookstack
+            - name: AUTH_METHOD
+              value: oidc
+            - name: AUTH_AUTO_INITIATE
+              value: "false"
+            - name: OIDC_DISPLAY_NAME_CLAIMS
+              value: bookstack
+            - name: OIDC_ISSUER
+              value: https://auth.hyperserver.dev/application/o/bookstack/
+            - name: OIDC_ISSUER_DISCOVER
+              value: "true"
+
+          envFrom:
+            - secretRef:
+                name: bookstack-secret
+          ports:
+            - containerPort: 80
+              name: bookstack
+          volumeMounts:
+            - name: bookstack-storage
+              mountPath: /config
+      volumes:
+        - name: bookstack-storage
+          persistentVolumeClaim:
+            claimName: bookstack-storage
