@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-bookstack-database
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: create-db
+          image: mariadb:10.5
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              mysql -h mariadb.default.svc.cluster.local -u$(DB_USER) -p$(DB_PASSWORD) -e "CREATE DATABASE blink;" && \
+              mysql -h mariadb.default.svc.cluster.local -u$(DB_USER) -p$(DB_PASSWORD) -e "CREATE USER 'blink'@'%' IDENTIFIED BY '$(USER_MARIADB_PASSWORD)';" && \
+              mysql -h mariadb.default.svc.cluster.local -u$(DB_USER) -p$(DB_PASSWORD) -e "GRANT ALL PRIVILEGES ON blink.* TO 'blink'@'%';" && \
+              mysql -h mariadb.default.svc.cluster.local -u$(DB_USER) -p$(DB_PASSWORD) -e "FLUSH PRIVILEGES;"
+          env:
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: password
+            - name: USER_MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secret
+                  key: DB_PASSWORD
+
