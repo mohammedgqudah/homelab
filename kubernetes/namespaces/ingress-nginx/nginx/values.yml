@@ -3,6 +3,7 @@ controller:
     enable-real-ip: true
     forwarded-for-header: cf-connecting-ip
     use-forwarded-headers: true
+    allow-snippet-annotations: true
   metrics:
     enabled: true
     service:
