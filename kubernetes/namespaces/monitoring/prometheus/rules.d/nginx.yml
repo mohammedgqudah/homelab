@@ -1,0 +1,22 @@
+groups:
+- name: nginx
+  rules:
+  # this threshold may seem low, but I don't expect anyone to be using the services for now except for me
+  - alert: NginxHighRequestVolume
+    expr: sum(increase(nginx_ingress_controller_requests[5m])) by (ingress) > 100
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High request volume on ingress {{ $labels.ingress }}"
+      description: "The request volume on ingress {{ $labels.ingress }} is higher than 100 requests in the last 5 minutes."
+
+  - alert: NginxLatencyHigh
+    expr: histogram_quantile(0.99, sum(rate(nginx_ingress_controller_request_duration_seconds_bucket[2m])) by (host, node, le)) > 3
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: Nginx latency high (instance {{ $labels.instance }})
+      description: "Nginx p99 latency is {{ $value }} for host {{ $labels.host }}"
+
