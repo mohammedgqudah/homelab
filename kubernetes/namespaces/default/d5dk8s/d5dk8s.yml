@@ -1,5 +1,8 @@
 api_server: "https://kubernetes.default.svc"
 
+guild_ids:
+- 1177629453124378634
+
 prometheus:
   enabled: true
   url: http://prometheus.default.svc.cluster.local

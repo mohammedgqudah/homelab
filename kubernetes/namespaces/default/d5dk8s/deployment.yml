@@ -14,7 +14,7 @@ spec:
       serviceAccountName: d5dk8s
       containers:
         - name: d5dk8s
-          image: ghcr.io/mohammedgqudah/d5dk8s:v1.0.0
+          image: ghcr.io/mohammedgqudah/d5dk8s:v1.1.0
           args:
             - "--config=/etc/d5dk8s/d5dk8s.yml"
           imagePullPolicy: IfNotPresent

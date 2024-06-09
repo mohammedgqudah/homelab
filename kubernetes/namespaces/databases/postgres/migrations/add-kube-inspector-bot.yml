@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: add-kube-inspector-bot-database
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: create-db
+          image: postgres:13
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              psql -h postgres.default.svc.cluster.local -U $(PGUSER) -d postgres -c "CREATE DATABASE $(NEW_DB);" && \
+              psql -h postgres.default.svc.cluster.local -U $(PGUSER) -d postgres -c \
+                "CREATE USER $(NEW_DB) WITH ENCRYPTED PASSWORD '$(NEW_PASSWORD)';" && \
+              psql -h postgres.default.svc.cluster.local -U $(PGUSER) -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE $(NEW_DB) TO $(NEW_DB);"
+              psql -h postgres.default.svc.cluster.local -U $(PGUSER) -d $(NEW_DB) -c "GRANT ALL ON SCHEMA public TO $(NEW_DB);"
+          env:
+            - name: PGUSER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: NEW_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: d5dk8s-secret
+                  key: D5DK8S_CONFIG_POSTGRES_PASSWORD
+            - name: NEW_DB
+              value: kube_inspector_bot
