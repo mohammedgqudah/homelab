@@ -1,0 +1,18 @@
+# I will create an ingress per application later. (might even switch to Gateways)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: auto.hyperserver.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: n8n
+                port:
+                  number: 80
