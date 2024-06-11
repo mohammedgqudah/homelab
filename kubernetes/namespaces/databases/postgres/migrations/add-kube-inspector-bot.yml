@@ -28,7 +28,7 @@ spec:
             - name: NEW_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: d5dk8s-secret
-                  key: D5DK8S_CONFIG_POSTGRES_PASSWORD
+                  name: kube-inspector-bot-secret
+                  key: BOT_CONFIG_POSTGRES_PASSWORD
             - name: NEW_DB
               value: kube_inspector_bot
