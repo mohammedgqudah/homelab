@@ -31,6 +31,17 @@ spec:
           volumeMounts:
             - name: minio-storage
               mountPath: /data
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+              scheme: HTTP
+            successThreshold: 1
+          livenessProbe:
+            failureThreshold: 3
+            tcpSocket:
+              port: 9000
       volumes:
         - name: minio-storage
           persistentVolumeClaim:
