@@ -11,6 +11,9 @@ spec:
       labels:
         app: outline
     spec:
+      # using S3 as the file storage doesn't work on arm machines
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
       - name: outline
         image: outlinewiki/outline:latest
