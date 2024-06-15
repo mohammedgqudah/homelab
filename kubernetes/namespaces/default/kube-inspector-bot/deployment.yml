@@ -14,7 +14,7 @@ spec:
       serviceAccountName: kube-inspector-bot
       containers:
         - name: kube-inspector-bot
-          image: ghcr.io/mohammedgqudah/kube-inspector-bot:v1.1.2
+          image: ghcr.io/mohammedgqudah/kube-inspector-bot:v1.1.3
           args:
             - "--config=/etc/kube-inspector-bot/bot.yml"
           imagePullPolicy: IfNotPresent
