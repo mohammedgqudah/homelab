@@ -5,7 +5,7 @@
   tasks:
     - name: Define Kubernetes version and CRI-O stream
       set_fact:
-        KUBERNETES_VERSION: "v1.29"
+        KUBERNETES_VERSION: "v1.30"
         PROJECT_PATH: "prerelease:/main"
 
     # on raspberry pi this file is used
