@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackbox-exporter
+spec:
+  selector:
+    matchLabels:
+      app: blackbox-exporter
+  template:
+    metadata:
+      labels:
+        app: blackbox-exporter
+    spec:
+      containers:
+        - image: prom/blackbox-exporter:v0.25.0
+          imagePullPolicy: IfNotPresent
+          name: blackbox-exporter
+          ports:
+            - containerPort: 9115
+              name: http

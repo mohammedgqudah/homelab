@@ -20,6 +20,7 @@ metadata:
   name: alertmanager
   annotations:
     prometheus.io/scrape: 'true'
+    prometheus.io/probe: 'true'
 spec:
   selector:
     app: alertmanager

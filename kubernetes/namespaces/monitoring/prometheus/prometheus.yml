@@ -79,3 +79,29 @@ scrape_configs:
       - action: replace
         source_labels: [__meta_kubernetes_node_name]
         target_label: node
+
+  # Blackbox prober for kubernetes services.
+  # The service should have a `prometheus.io/probe: 'true'` annotation
+  - job_name: "blackbox-kubernetes-services"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    kubernetes_sd_configs:
+    - role: service
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+        action: keep
+        regex: true
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement:  blackbox-exporter.default.svc.cluster.local
+      - source_labels: [__param_target]
+        target_label: instance
+      - action: labelmap
+        regex: __meta_kubernetes_service_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_service_name]
+        target_label: kubernetes_service_name
+
