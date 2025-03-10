@@ -5,8 +5,8 @@
   tasks:
     - name: Define Kubernetes version and CRI-O stream
       set_fact:
-        KUBERNETES_VERSION: "v1.30"
-        PROJECT_PATH: "prerelease:/main"
+        KUBERNETES_VERSION: "v1.32"
+        CRIO_VERSION: "v1.32"
 
     # on raspberry pi this file is used
     # to store kernel options
@@ -44,26 +44,32 @@
         - curl
 
     - name: Import Kubernetes repository key
-      apt_key:
-        url: "https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/Release.key"
-        state: present
+      ansible.builtin.shell:
+        cmd: >
+          curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/Release.key |
+          gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
     - name: Add Kubernetes APT repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/ /"
         state: present
-        filename: "kubernetes.list"
+        filename: "kubernetes"
 
     - name: Import CRI-O repository key
-      apt_key:
-        url: "https://pkgs.k8s.io/addons:/cri-o:/{{ PROJECT_PATH }}/deb/Release.key"
-        state: present
+      ansible.builtin.shell:
+        cmd: >
+          curl -fsSL https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ CRIO_VERSION }}/deb/Release.key |
+              gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/cri-o-apt-keyring.gpg
 
     - name: Add CRI-O APT repository
       apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/{{ PROJECT_PATH }}/deb/ /"
+        repo: "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ CRIO_VERSION }}/deb/ /"
         state: present
-        filename: "cri-o.list"
+        filename: "cri-o"
 
     - name: Update package cache
       apt:
@@ -72,12 +78,15 @@
     - name: Install kubernetes packages & CRI-O
       apt:
         name: "{{ item }}"
-        state: present
+        state: latest
+        allow_change_held_packages: true
       with_items:
         - cri-o
         - kubelet
         - kubeadm
         - kubectl
+      tags:
+        - packages
 
     - name: Start CRI-O service
       service:
@@ -109,6 +118,7 @@
         name: dphys-swapfile
         state: stopped
         enabled: false
+      ignore_errors: true
 
     - name: Enable bridged traffic
       command: modprobe br_netfilter
