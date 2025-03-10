@@ -10,7 +10,7 @@ As of now, my cluster consists of 3 raspberry PIs and two computers (arch & debi
 
 To setup the NFS server run this playbook
 ```
-ansible-playbooks playbooks/setup-nfs.yml --limit pi-02.local
+ansible-playbook playbooks/setup-nfs.yml --limit pi-02.local
 ```
 And then install the NFS provisioner using `helm`
 
