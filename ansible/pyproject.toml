@@ -1,0 +1,13 @@
+[project]
+name = "ansible"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ansible",
+    "ansible-core>=2.18.3",
+]
+
+[tool.uv.sources]
+ansible = { workspace = true }
