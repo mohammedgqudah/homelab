@@ -1,0 +1,25 @@
+---
+- name: Enable serverTLSBootstrap in Kubelet config
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure Kubelet config file exists
+      stat:
+        path: /var/lib/kubelet/config.yaml
+      register: kubelet_config
+
+    - name: Add serverTLSBootstrap true to Kubelet config
+      lineinfile:
+        path: /var/lib/kubelet/config.yaml
+        line: "serverTLSBootstrap: true"
+        state: present
+        insertafter: EOF
+      when: kubelet_config.stat.exists
+
+    - name: Restart Kubelet service
+      systemd:
+        name: kubelet
+        state: restarted
+        enabled: yes
+      when: kubelet_config.stat.exists
+
