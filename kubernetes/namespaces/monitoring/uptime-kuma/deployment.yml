@@ -12,7 +12,7 @@ spec:
         app: uptime-kuma
     spec:
       containers:
-        - image: louislam/uptime-kuma:1
+        - image: ghcr.io/louislam/uptime-kuma:2.0.0-beta.1 
           imagePullPolicy: IfNotPresent
           name: uptime-kuma
           ports:
