@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linkding
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: links.hyperserver.dev
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: linkding
+              port:
+                number: 80

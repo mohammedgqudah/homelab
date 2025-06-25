@@ -4,6 +4,7 @@ controller:
     forwarded-for-header: cf-connecting-ip
     use-forwarded-headers: true
     allow-snippet-annotations: true
+    annotations-risk-level: "Critical"
   metrics:
     enabled: true
     service:
