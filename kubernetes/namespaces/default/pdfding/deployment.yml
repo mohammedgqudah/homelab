@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdfding
+spec:
+  selector:
+    matchLabels:
+      app: pdfding
+  template:
+    metadata:
+      labels:
+        app: pdfding
+    spec:
+      containers:
+        - image: mrmn/pdfding:latest
+          imagePullPolicy: IfNotPresent
+          name: pdfding
+          env:
+          - name: HOST_NAME
+            value: "books.hyperserver.dev"
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: pdfding-secret
+                key: secret_key
+          ports:
+            - name: http
+              containerPort: 8000
+          volumeMounts:
+            - name: pdfding-storage
+              mountPath: /home/nonroot/pdfding/db
+            - name: pdfding-media
+              mountPath: /home/nonroot/pdfding/media
+      volumes:
+        - name: pdfding-storage
+          persistentVolumeClaim:
+            claimName: pdfding-storage
+        - name: pdfding-media
+          persistentVolumeClaim:
+            claimName: pdfding-media
