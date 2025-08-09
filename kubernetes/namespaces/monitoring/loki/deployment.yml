@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: loki
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: loki
@@ -15,6 +17,7 @@ spec:
       - name: loki
         image: grafana/loki:2.9.8
         args:
+          - "-config.expand-env=true"
           - "-config.file=/etc/loki/loki.yml"
           - "-print-config-stderr"
         envFrom:
@@ -28,6 +31,10 @@ spec:
             mountPath: /etc/loki/
           - name: loki-storage
             mountPath: /var/lib/loki
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh","-c","sleep 10"]
       volumes:
         - name: loki-config
           configMap:
