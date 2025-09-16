@@ -3,6 +3,7 @@ pi-01.local
 pi-02.local
 pi-03.local
 debian-01.local
+192.168.100.218
 
 [admin]
 pi-02.local
