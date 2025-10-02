@@ -1,0 +1,26 @@
+- name: kubeadm init
+  hosts: control_plane
+  become: true
+  vars:
+    local_kubeadm_file: "../../kubernetes/kubeadm.yml"
+    remote_kubeadm_file: "/root/kubeadm.yml"
+
+  tasks:
+    - name: Copy kubeadm.yml from local to remote
+      ansible.builtin.copy:
+        src: "{{ local_kubeadm_file }}"
+        dest: "{{ remote_kubeadm_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Initialize control plane with kubeadm config
+      ansible.builtin.command:
+        cmd: "kubeadm init --config {{ remote_kubeadm_file }}"
+      args:
+        creates: "/etc/kubernetes/admin.conf"   # skip if already initialized
+      register: kubeadm_init
+
+    - name: Show kubeadm init output
+      ansible.builtin.debug:
+        var: kubeadm_init.stdout_lines
