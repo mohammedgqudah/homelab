@@ -1,1 +1,3 @@
 **/secret.yml filter=git-crypt diff=git-crypt
+**/mattermost-filestore-secret.yaml filter=git-crypt diff=git-crypt
+**/mattermost-database-secret.yaml filter=git-crypt diff=git-crypt

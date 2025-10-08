@@ -1,0 +1,19 @@
+apiVersion: installation.mattermost.com/v1beta1
+kind: Mattermost
+metadata:
+  name: hyperchat
+spec:
+  size: 5000users
+  ingress:
+    enabled: true
+    host: chat.hyperserver.dev
+    annotations:
+      kubernetes.io/ingress.class: nginx
+  database:
+    external:
+      secret: mattermost-secret
+  fileStore:
+    external:
+      url: s3-api.hyperserver.dev
+      bucket: mattermost
+      secret: mattermost-s3-secret
