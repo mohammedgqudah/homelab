@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: postgres
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: postgres
@@ -13,7 +15,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:16.2
+          image: postgres:16.13
           imagePullPolicy: IfNotPresent
           env:
             - name: PGDATA

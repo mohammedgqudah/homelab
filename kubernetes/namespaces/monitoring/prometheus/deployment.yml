@@ -4,6 +4,8 @@ metadata:
   name: prometheus
   #namespace: monitoring
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: prometheus
@@ -14,13 +16,14 @@ spec:
     spec:
       serviceAccountName: prometheus
       containers:
-        - image: prom/prometheus:v3.0.0-beta.0
+        - image: prom/prometheus:v3.5.1
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--web.external-url=https://prometheus.hyperserver.dev"
             - "--storage.tsdb.path=/var/lib/prometheus"
             - "--storage.tsdb.retention.size=5GB"
             - "--storage.tsdb.retention.time=30d"
+            - "--storage.tsdb.no-lockfile"
             - "--web.enable-lifecycle"
           imagePullPolicy: Always
           name: prometheus

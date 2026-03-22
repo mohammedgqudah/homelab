@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: grafana
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: grafana
@@ -12,7 +14,7 @@ spec:
         app: grafana
     spec:
       containers:
-        - image: grafana/grafana:10.4.2-ubuntu
+        - image: grafana/grafana:12.4.1-ubuntu
           imagePullPolicy: IfNotPresent
           name: grafana
           envFrom:

@@ -13,8 +13,7 @@ spec:
         app: alertmanager
     spec:
       containers:
-        # main has support for discord_webhook_url_file.
-        - image: prom/alertmanager:main
+        - image: prom/alertmanager:v0.30.0
           args:
             - "--config.file=/etc/alertmanager/alertmanager.yml"
           imagePullPolicy: IfNotPresent
