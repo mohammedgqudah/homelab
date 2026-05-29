@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: garage-config
+data:
+  garage.toml: |
+    metadata_dir = "/mnt/meta"
+    data_dir = "/mnt/data"
+    db_engine = "lmdb"
+    metadata_fsync = true
+
+    replication_factor = 1
+
+    rpc_bind_addr = "[::]:3901"
+    rpc_public_addr = "127.0.0.1:3901"
+
+    [s3_api]
+    s3_region = "us-east-1"
+    api_bind_addr = "[::]:3900"
+    root_domain = ".s3.garage"
+
+    [s3_web]
+    bind_addr = "[::]:3902"
+    root_domain = ".web.garage"
+    index = "index.html"
+
+    [admin]
+    api_bind_addr = "[::]:3903"

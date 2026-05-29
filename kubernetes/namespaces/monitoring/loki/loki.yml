@@ -8,7 +8,7 @@ server:
 
 storage_config:
   aws:
-    endpoint: "http://minio.default.svc.cluster.local:9000"
+    endpoint: "http://garage.default.svc.cluster.local:3900"
     access_key_id: ${S3_ACCESS_KEY_ID}
     secret_access_key: ${S3_SECRET_ACCESS_KEY}
     s3forcepathstyle: true

@@ -14,7 +14,7 @@ spec:
         app: grafana
     spec:
       containers:
-        - image: grafana/grafana:12.4.1-ubuntu
+        - image: grafana/grafana:12.4.3-security-02-ubuntu
           imagePullPolicy: IfNotPresent
           name: grafana
           envFrom:

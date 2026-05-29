@@ -1,5 +1,9 @@
+global:
+    image:
+        tag: "2026.5.2"
+
 authentik:
-    secret_key: file:///secrets/secret-key 
+    secret_key: file:///secrets/secret-key
     # This sends anonymous usage-data, stack traces on errors and
     # performance data to sentry.io, and is fully opt-in
     error_reporting:
