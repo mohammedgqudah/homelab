@@ -12,6 +12,18 @@ spec:
         app: promtail
     spec:
       serviceAccountName: prometheus
+      initContainers:
+        # Fetch the MaxMind GeoLite2 Country DB from a public mirror so the
+        # promtail geoip stage can resolve client IPs to a country code.
+        - name: fetch-geoip-db
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - "curl -fsSL -o /geoip/GeoLite2-City.mmdb https://raw.githubusercontent.com/P3TERX/GeoLite.mmdb/download/GeoLite2-City.mmdb"
+          volumeMounts:
+            - name: geoip
+              mountPath: /geoip
       containers:
         - name: promtail
           image: grafana/promtail:latest
@@ -32,6 +44,9 @@ spec:
               mountPath: /mnt/config
             - name: promtail-storage
               mountPath: /var/lib/promtail
+            - name: geoip
+              mountPath: /etc/promtail/geoip
+              readOnly: true
       volumes:
         - name: varlog
           hostPath:
@@ -42,4 +57,6 @@ spec:
         - name: promtail-storage
           persistentVolumeClaim:
             claimName: promtail-storage
+        - name: geoip
+          emptyDir: {}
 

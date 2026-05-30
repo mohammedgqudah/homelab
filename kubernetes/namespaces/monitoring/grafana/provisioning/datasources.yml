@@ -17,3 +17,10 @@ datasources:
       implementation: prometheus
       handleGrafanaManagedAlerts: false
     basicAuth: false
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: 'http://loki.default.svc.cluster.local'
+    uid: loki
+    basicAuth: false
