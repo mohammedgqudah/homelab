@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: convertx
+spec:
+  selector:
+    matchLabels:
+      app: convertx
+  template:
+    metadata:
+      labels:
+        app: convertx
+    spec:
+      containers:
+        - image: ghcr.io/c4illin/convertx:latest
+          imagePullPolicy: IfNotPresent
+          name: convertx
+          env:
+            - name: ACCOUNT_REGISTRATION
+              value: "false"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: convertx-secret
+                  key: jwt_secret
+          ports:
+            - name: http
+              containerPort: 3000
+          volumeMounts:
+            - name: convertx-data
+              mountPath: /app/data
+      volumes:
+        - name: convertx-data
+          persistentVolumeClaim:
+            claimName: convertx-data

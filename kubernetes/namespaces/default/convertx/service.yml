@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: convertx
+spec:
+  selector:
+    app: convertx
+  ports:
+    - name: http
+      targetPort: http
+      port: 80

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: convertx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "1000M"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: convert.hyperserver.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: convertx
+                port:
+                  number: 80
