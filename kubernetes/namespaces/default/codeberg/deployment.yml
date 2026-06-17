@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codeberg
+spec:
+  selector:
+    matchLabels:
+      app: codeberg
+  template:
+    metadata:
+      labels:
+        app: codeberg
+    spec:
+      containers:
+        - image: codeberg.org/forgejo/forgejo:15.0.3
+          imagePullPolicy: IfNotPresent
+          name: codeberg
+          env:
+            - name: FORGEJO__service__DISABLE_REGISTRATION
+              value: "true"
+            - name: FORGEJO__service__REQUIRE_SIGNIN_VIEW
+              value: "true"
+          ports:
+            - containerPort: 3000
+              name: web
+            - containerPort: 22
+              name: git
+          volumeMounts:
+            - name: codeberg-data
+              mountPath: /data
+      volumes:
+        - name: codeberg-data
+          persistentVolumeClaim:
+            claimName: codeberg-data
