@@ -20,6 +20,8 @@ spec:
               value: "true"
             - name: FORGEJO__service__REQUIRE_SIGNIN_VIEW
               value: "true"
+            - name: FORGEJO__packages__ENABLED
+              value: "true"
           ports:
             - containerPort: 3000
               name: web

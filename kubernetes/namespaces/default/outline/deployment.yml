@@ -57,6 +57,8 @@ spec:
             value: "false"
           - name: AWS_S3_ACL
             value: "private"
+          - name: RATE_LIMITER_ENABLED
+            value: "false"
 
         ports:
           - name: outline

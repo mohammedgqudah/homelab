@@ -1,0 +1,46 @@
+# Make a backup of my files in Outline and save them in Google Drive
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: outline-sync
+spec:
+  # each day
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: hyperserver-registry
+
+          volumes:
+            - name: backup
+              emptyDir: {}
+
+          initContainers:
+            - name: export
+              image: git.hyperserver.dev/hyper/outline-backup:latest
+              workingDir: /backup
+              envFrom:
+                - secretRef:
+                    name: outline-backup-secrets
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+
+          containers:
+            - name: upload
+              image: rclone/rclone:latest
+              command:
+                - sh
+                - -c
+                - |
+                  rclone copy /backup gdrive:Backups/Outline --include "outline-*.zip" &&
+                  rm /backup/outline-*.zip
+              envFrom:
+                - secretRef:
+                    name: outline-backup-secrets
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
