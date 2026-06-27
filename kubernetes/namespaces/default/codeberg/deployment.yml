@@ -19,9 +19,15 @@ spec:
             - name: FORGEJO__service__DISABLE_REGISTRATION
               value: "true"
             - name: FORGEJO__service__REQUIRE_SIGNIN_VIEW
-              value: "true"
+              value: "false"
             - name: FORGEJO__packages__ENABLED
               value: "true"
+            - name: FORGEJO__openid__ENABLE_OPENID_SIGNIN
+              value: "false"
+            - name: FORGEJO__openid__ENABLE_OPENID_SIGNUP
+              value: "false"
+            - name: FORGEJO__server__LANDING_PAGE
+              value: "explore"
           ports:
             - containerPort: 3000
               name: web
