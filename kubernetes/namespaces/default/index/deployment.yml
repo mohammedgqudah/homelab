@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyper-index
+spec:
+  selector:
+    matchLabels:
+      app: hyper-index
+  template:
+    metadata:
+      labels:
+        app: hyper-index
+    spec:
+      containers:
+        - image: git.hyperserver.dev/hyper/hyperserver-index
+          imagePullPolicy: Always
+          name: hyper-index
+          ports:
+            - containerPort: 80
+              name: http

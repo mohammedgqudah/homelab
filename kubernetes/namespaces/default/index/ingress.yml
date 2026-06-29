@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hyper-index
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: hyperserver.dev
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: hyper-index
+              port:
+                number: 80
