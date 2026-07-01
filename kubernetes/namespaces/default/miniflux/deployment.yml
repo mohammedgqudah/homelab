@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: miniflux
+spec:
+  selector:
+    matchLabels:
+      app: miniflux
+  template:
+    metadata:
+      labels:
+        app: miniflux
+    spec:
+      containers:
+        - image: docker.io/miniflux/miniflux:latest
+          imagePullPolicy: IfNotPresent
+          name: miniflux
+          envFrom:
+            - configMapRef:
+                name: miniflux-config
+            - secretRef:
+                name: miniflux-secret
+          ports:
+            - containerPort: 8080
+              name: miniflux

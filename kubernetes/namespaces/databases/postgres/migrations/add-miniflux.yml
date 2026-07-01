@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-miniflux-database
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: create-db
+          image: postgres:16.13
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c "CREATE DATABASE miniflux;" && \
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d postgres -c \
+                "CREATE USER miniflux WITH ENCRYPTED PASSWORD '$(USER_POSTGRES_PASSWORD)';" && \
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d miniflux -c "GRANT ALL PRIVILEGES ON DATABASE miniflux TO miniflux;"
+              psql -h postgres.default.svc.cluster.local -U $(POSTGRES_USER) -d miniflux -c "GRANT ALL ON SCHEMA public TO miniflux;"
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: USER_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-secret
+                  key: POSTGRES_PASSWORD
