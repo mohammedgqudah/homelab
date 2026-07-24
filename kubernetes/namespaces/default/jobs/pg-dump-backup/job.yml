@@ -1,0 +1,59 @@
+# Dumps all PostgreSQL databases and uploads to Google Drive
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pg-dump-backup
+spec:
+  # weekly on Sunday at 3am
+  schedule: "0 3 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: hyperserver-registry
+
+          volumes:
+            - name: backup
+              emptyDir: {}
+
+          initContainers:
+            - name: dump
+              image: postgres:16.13
+              workingDir: /backup
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: password
+                - name: PGHOST
+                  value: postgres.default.svc.cluster.local
+                - name: PGUSER
+                  value: postgres
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+              command:
+                - sh
+                - -c
+                - |
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  pg_dumpall --no-password | gzip > /backup/pg-dumpall-${TIMESTAMP}.sql.gz
+
+          containers:
+            - name: upload
+              image: rclone/rclone:latest
+              envFrom:
+                - secretRef:
+                    name: outline-backup-secrets
+              command:
+                - sh
+                - -c
+                - |
+                  rclone copy /backup gdrive:Backups/Postgres --include "pg-dumpall-*.sql.gz" &&
+                  rm /backup/pg-dumpall-*.sql.gz
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
