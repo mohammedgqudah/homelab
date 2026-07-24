@@ -1,0 +1,56 @@
+# Backs up linkding data PVC and uploads to Google Drive
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: linkding-backup
+spec:
+  # weekly on Sunday at 3am
+  schedule: "0 3 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: hyperserver-registry
+
+          volumes:
+            - name: backup
+              emptyDir: {}
+            - name: linkding-data
+              persistentVolumeClaim:
+                claimName: linkding-storage
+                readOnly: true
+
+          initContainers:
+            - name: archive
+              image: alpine:latest
+              workingDir: /backup
+              volumeMounts:
+                - name: linkding-data
+                  mountPath: /linkding-data
+                  readOnly: true
+                - name: backup
+                  mountPath: /backup
+              command:
+                - sh
+                - -c
+                - |
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  tar -czf /backup/linkding-${TIMESTAMP}.tar.gz -C /linkding-data .
+
+          containers:
+            - name: upload
+              image: rclone/rclone:latest
+              envFrom:
+                - secretRef:
+                    name: outline-backup-secrets
+              command:
+                - sh
+                - -c
+                - |
+                  rclone copy /backup gdrive:Backups/Linkding --include "linkding-*.tar.gz" &&
+                  rm /backup/linkding-*.tar.gz
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
