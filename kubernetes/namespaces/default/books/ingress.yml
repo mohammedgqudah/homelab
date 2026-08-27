@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: books
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "1000M"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: read.hyperserver.dev
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: books
+              port:
+                number: 80

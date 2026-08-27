@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: books
+spec:
+  selector:
+    matchLabels:
+      app: books
+  template:
+    metadata:
+      labels:
+        app: books
+    spec:
+      volumes:
+        - name: books-data
+          persistentVolumeClaim:
+            claimName: books-storage
+      containers:
+        - image: git.hyperserver.dev/hyper/rust-books:latest
+          imagePullPolicy: Always
+          name: books
+          envFrom:
+            - configMapRef:
+                name: books-config
+            - secretRef:
+                name: books-secret
+          volumeMounts:
+            - name: books-data
+              mountPath: /var/lib/books
+          ports:
+            - containerPort: 3000
+              name: books
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3

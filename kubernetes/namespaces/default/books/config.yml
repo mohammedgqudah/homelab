@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: books-config
+data:
+  BOOKS__FRONTEND_ORIGIN: "https://read.hyperserver.dev"
+  BOOKS__SERVER__HOST: "0.0.0.0"
+  BOOKS__SERVER__PORT: "3000"
+  BOOKS__SERVER__PORT: "3000"
+  BOOKS__LIBRARY__DATA_DIRECTORY: "/var/lib/books"
+  BOOKS__LIBRARY__MAX_UPLOAD_SIZE_MB: "1024"
+  RUST_LOG: "books=debug"
