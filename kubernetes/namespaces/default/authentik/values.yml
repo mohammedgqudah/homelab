@@ -1,6 +1,6 @@
 global:
     image:
-        tag: "2026.5.2"
+        tag: "2026.8.5"
 
 authentik:
     secret_key: file:///secrets/secret-key

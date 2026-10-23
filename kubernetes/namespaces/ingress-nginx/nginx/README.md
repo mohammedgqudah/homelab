@@ -6,6 +6,7 @@ Using the helm chart, based on the [documentation](https://kubernetes.github.io/
 ```
 helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
+  --version 4.15.1 \
   --namespace ingress-nginx --create-namespace \
     --values namespaces/ingress-nginx/nginx/values.yml
 ```
