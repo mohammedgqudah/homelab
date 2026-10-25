@@ -4,8 +4,8 @@ kind: CronJob
 metadata:
   name: outline-sync
 spec:
-  # each day
-  schedule: "0 2 * * *"
+  # every Sunday
+  schedule: "0 2 * * 0"
   jobTemplate:
     spec:
       template:
