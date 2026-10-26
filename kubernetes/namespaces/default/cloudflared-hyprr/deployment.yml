@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: cloudflared-hyprr
-          image: cloudflare/cloudflared:latest
+          image: cloudflare/cloudflared:2026.10.4
           imagePullPolicy: IfNotPresent
           env:
             - name: CLOUDFLARED_TOKEN
