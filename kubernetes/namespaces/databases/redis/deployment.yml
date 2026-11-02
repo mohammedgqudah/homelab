@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:7.2.12
+          image: redis:7.2.17
           imagePullPolicy: IfNotPresent
           command: 
             - redis-server

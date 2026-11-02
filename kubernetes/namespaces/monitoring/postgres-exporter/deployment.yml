@@ -12,7 +12,7 @@ spec:
         app: postgres-exporter
     spec:
       containers:
-        - image: prometheuscommunity/postgres-exporter:v0.15.0
+        - image: prometheuscommunity/postgres-exporter:v0.20.1
           imagePullPolicy: IfNotPresent
           name: postgres-exporter
           env:

@@ -16,7 +16,7 @@ spec:
     spec:
       serviceAccountName: prometheus
       containers:
-        - image: prom/prometheus:v3.5.1
+        - image: prom/prometheus:v3.15.1
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--web.external-url=https://prometheus.hyperserver.dev"

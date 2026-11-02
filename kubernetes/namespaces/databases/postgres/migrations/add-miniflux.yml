@@ -8,7 +8,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: create-db
-          image: postgres:16.13
+          image: postgres:16.15
           command: ["/bin/sh", "-c"]
           args:
             - |

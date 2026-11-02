@@ -20,7 +20,7 @@ spec:
 
           initContainers:
             - name: dump
-              image: postgres:16.13
+              image: postgres:16.15
               workingDir: /backup
               env:
                 - name: PGPASSWORD

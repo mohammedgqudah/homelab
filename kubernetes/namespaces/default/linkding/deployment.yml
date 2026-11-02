@@ -16,7 +16,7 @@ spec:
           persistentVolumeClaim:
             claimName: linkding-storage
       containers:
-        - image: sissbruecker/linkding:1.41.0-plus-alpine
+        - image: sissbruecker/linkding:1.47.0-plus-alpine
           imagePullPolicy: IfNotPresent
           name: linkding
           volumeMounts:

@@ -13,7 +13,7 @@ spec:
         app: alertmanager
     spec:
       containers:
-        - image: prom/alertmanager:v0.30.0
+        - image: prom/alertmanager:v0.34.2
           args:
             - "--config.file=/etc/alertmanager/alertmanager.yml"
           imagePullPolicy: IfNotPresent
