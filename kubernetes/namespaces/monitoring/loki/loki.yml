@@ -30,6 +30,11 @@ schema_config:
         prefix: index_
         period: 24h
 
+limits_config:
+  volume_enabled: true
+query_scheduler:
+  max_outstanding_requests_per_tenant: 4096
+
 common:
   ring:
     instance_addr: 127.0.0.1
