@@ -5,6 +5,7 @@ controller:
     use-forwarded-headers: true
     allow-snippet-annotations: true
     annotations-risk-level: "Critical"
+    use-http2: "false"
   metrics:
     enabled: true
     service:
