@@ -1,7 +1,10 @@
 {
   "uid": "homelab-overview",
   "title": "Homelab Overview",
-  "tags": ["homelab", "overview"],
+  "tags": [
+    "homelab",
+    "overview"
+  ],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,
@@ -461,7 +464,7 @@
     {
       "id": 3,
       "type": "timeseries",
-      "title": "Ingress requests per 5 minutes (by ingress)",
+      "title": "Requests per 5 minutes (by host)",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -479,7 +482,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (ingress) (increase(nginx_ingress_controller_requests[5m]))",
+          "expr": "sum by (host) (label_replace(increase(envoy_vhost_vcluster_upstream_rq_total[5m]), \"host\", \"$1\", \"envoy_virtual_host\", \".*/http/(.*)\"))",
           "legendFormat": "{{ingress}}"
         }
       ],
@@ -505,7 +508,11 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
-          "calcs": ["mean", "max", "lastNotNull"]
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
         }
       }
     },
@@ -531,7 +538,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "count(count by (remote_addr) (count_over_time({namespace=\"ingress-nginx\", container=\"controller\"} | pattern `<remote_addr> <_>` [$__range])))",
+          "expr": "count(count by (client_ip) (count_over_time({namespace=\"envoy-gateway-system\", container=\"envoy\"} | json client_ip=\"client_ip\" [$__range])))",
           "queryType": "instant"
         }
       ],
@@ -547,7 +554,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -578,7 +587,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum by (geoip_country_name) (count_over_time({namespace=\"ingress-nginx\", container=\"controller\", geoip_country_name!=\"\"} [$__range]))",
+          "expr": "sum by (geoip_country_name) (count_over_time({namespace=\"envoy-gateway-system\", container=\"envoy\", geoip_country_name!=\"\"} [$__range]))",
           "queryType": "instant"
         }
       ],

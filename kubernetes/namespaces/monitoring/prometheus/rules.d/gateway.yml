@@ -1,0 +1,24 @@
+groups:
+- name: gateway
+  rules:
+  # Per host, from Envoy's virtual host stats (telemetry.metrics.enableVirtualHostStats
+  # in namespaces/gateway/envoyproxy.yml). envoy_virtual_host is the generated
+  # name gateway/public/http/<host with dots as underscores>.
+  # this threshold may seem low, but I don't expect anyone to be using the services for now except for me
+  - alert: GatewayHighRequestVolume
+    expr: sum by (envoy_virtual_host) (increase(envoy_vhost_vcluster_upstream_rq_total[5m])) > 200
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High request volume on {{ $labels.envoy_virtual_host }}"
+      description: "The gateway served more than 200 requests in the last 5 minutes."
+
+      #- alert: GatewayLatencyHigh
+      #  expr: histogram_quantile(0.99, sum(rate(envoy_http_downstream_rq_time_bucket[2m])) by (le)) > 3
+      #  for: 2m
+      #  labels:
+      #    severity: warning
+      #  annotations:
+      #    summary: Gateway p99 latency high
+      #    description: "The edge gateway p99 latency is {{ $value }}s."

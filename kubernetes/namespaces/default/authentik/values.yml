@@ -28,11 +28,9 @@ server:
       - name: authentik-secret
         mountPath: /secrets
         readOnly: true
+    # Routed by httproute-server.yml instead.
     ingress:
-        ingressClassName: nginx
-        enabled: true
-        hosts:
-            - auth.hyperserver.dev
+        enabled: false
 
 worker:
     volumes:

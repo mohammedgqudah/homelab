@@ -1,0 +1,14 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: linkding
+spec:
+  parentRefs:
+    - name: public
+      namespace: gateway
+  hostnames:
+    - links.hyperserver.dev
+  rules:
+    - backendRefs:
+        - name: linkding
+          port: 80
