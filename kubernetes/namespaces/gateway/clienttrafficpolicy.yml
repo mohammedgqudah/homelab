@@ -1,0 +1,16 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: public
+  namespace: gateway
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: public
+  clientIPDetection:
+    # the real client address comes from this Cloudflare header
+    customHeader:
+      name: CF-Connecting-IP
+      # accept requests without cloudflare's header
+      failClosed: false

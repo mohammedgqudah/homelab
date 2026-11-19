@@ -1,0 +1,45 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: edge
+  namespace: gateway
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: ClusterIP
+        # pin the service name so the Cloudflare tunnel origin is stable.
+        # http://gateway-edge.envoy-gateway-system.svc.cluster.local:80
+        name: gateway-edge
+      envoyDeployment:
+        pod:
+          labels:
+            app: envoy-edge
+  telemetry:
+    metrics:
+      # Envoy only publishes per-host stats when asked; they land under
+      # vhost.<host>.vcluster.<backend>.upstream_rq_total.
+      enableVirtualHostStats: true
+    accessLog:
+      settings:
+        - format:
+            type: JSON
+            json:
+              start_time: "%START_TIME%"
+              authority: "%REQ(:AUTHORITY)%"
+              method: "%REQ(:METHOD)%"
+              path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+              protocol: "%PROTOCOL%"
+              response_code: "%RESPONSE_CODE%"
+              response_flags: "%RESPONSE_FLAGS%"
+              bytes_received: "%BYTES_RECEIVED%"
+              bytes_sent: "%BYTES_SENT%"
+              duration_ms: "%DURATION%"
+              upstream_host: "%UPSTREAM_HOST%"
+              client_ip: "%REQ(CF-CONNECTING-IP)%"
+              x_forwarded_for: "%REQ(X-FORWARDED-FOR)%"
+          sinks:
+            - type: File
+              file:
+                path: /dev/stdout

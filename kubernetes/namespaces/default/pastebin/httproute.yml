@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pastebin
+spec:
+  parentRefs:
+    - name: public
+      namespace: gateway
+  hostnames:
+    - paste.hyperserver.dev
+    - paste.hyprr.dev
+  rules:
+    - backendRefs:
+        - name: pastebin
+          port: 80

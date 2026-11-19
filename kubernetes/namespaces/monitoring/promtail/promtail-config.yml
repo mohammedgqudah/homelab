@@ -22,15 +22,16 @@ scrape_configs:
       - role: pod
     pipeline_stages:
       - cri: {}
-      # Geo-enrich ingress-nginx access logs: extract the client IP and resolve
-      # it to a country code so Grafana can plot a visitor map. Scoped to the
-      # ingress controller only to keep label cardinality low (one label,
-      # geoip_country_code, ~number of countries).
+      # Geo-enrich gateway access logs: extract the client IP and resolve it to a
+      # country code so Grafana can plot a visitor map. Scoped to the Envoy
+      # Gateway proxy pods to keep label cardinality low (one label,
+      # geoip_country_name, ~number of countries). client_ip comes from the JSON
+      # access log format in namespaces/gateway/envoyproxy.yml.
       - match:
-          selector: '{namespace="ingress-nginx", container="controller"}'
+          selector: '{namespace="envoy-gateway-system", container="envoy"}'
           stages:
             - regex:
-                expression: '^(?P<remote_addr>\S+)'
+                expression: '"client_ip":"(?P<remote_addr>[^"]+)"'
             - geoip:
                 db: "/etc/promtail/geoip/GeoLite2-City.mmdb"
                 source: "remote_addr"

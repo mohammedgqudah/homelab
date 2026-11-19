@@ -4,11 +4,9 @@ metadata:
   name: hyperchat
 spec:
   size: 5000users
+  # Routed by httproute.yml instead.
   ingress:
-    enabled: true
-    host: chat.hyperserver.dev
-    annotations:
-      kubernetes.io/ingress.class: nginx
+    enabled: false
   database:
     external:
       secret: mattermost-secret

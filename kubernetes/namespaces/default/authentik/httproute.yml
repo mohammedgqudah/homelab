@@ -1,0 +1,14 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: authentik-outpost
+spec:
+  parentRefs:
+    - name: public
+      namespace: gateway
+  hostnames:
+    - auth-op.hyperserver.dev
+  rules:
+    - backendRefs:
+        - name: ak-outpost-authentik-embedded-outpost
+          port: 9000

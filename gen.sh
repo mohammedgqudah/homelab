@@ -101,25 +101,22 @@ spec:
               name: ${APP_NAME}
 EOF
 
-# Generate ingress.yml
-cat <<EOF > "${TARGET_DIR}/ingress.yml"
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+# Generate httproute.yml
+cat <<EOF > "${TARGET_DIR}/httproute.yml"
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: ${APP_NAME}
 spec:
-  ingressClassName: nginx
+  parentRefs:
+    - name: public
+      namespace: gateway
+  hostnames:
+    - ${SUBDOMAIN}.hyperserver.dev
   rules:
-  - host: ${SUBDOMAIN}.hyperserver.dev
-    http:
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: ${APP_NAME}
-              port:
-                number: 80
+    - backendRefs:
+        - name: ${APP_NAME}
+          port: 80
 EOF
 
 # Generate service.yml
